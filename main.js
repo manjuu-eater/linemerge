@@ -25,8 +25,27 @@ function activate(context) {
 				new vscode.Position(st_r.start.line, st_r.start.character),
 				new vscode.Position(en_r.start.line, en_r.end.character)
 			);
-			e.replace(range, txt.slice(st, en - st + 1).filter((v, i, a) => a.indexOf(v) === i).join(eol));
-			vscode.window.showInformationMessage('Line merged');
+
+			// merge lines
+			const originalLines = txt.slice(st, en - st + 1);
+			const replacedLines = originalLines.filter((v, i, a) => a.indexOf(v) === i);
+			const mergedStr = replacedLines.join(eol);
+			e.replace(range, mergedStr);
+
+			// calculate line count
+			const originalLineCount = originalLines.length;
+			const afterReplaceLineCount = replacedLines.length;
+			const mergedLineCount = originalLineCount - afterReplaceLineCount;
+
+			// make result message
+			const resultMessage = (
+				mergedLineCount > 0
+				? `Merged ${mergedLineCount} lines`
+				: "No lines are merged"
+			);
+
+			// show result message
+			vscode.window.showInformationMessage(resultMessage);
 		}, {});
 	});
 
