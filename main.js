@@ -26,26 +26,15 @@ function activate(context) {
 				new vscode.Position(en_r.start.line, en_r.end.character)
 			);
 
-			// merge lines
 			const originalLines = txt.slice(st, en - st + 1);
 			const replacedLines = originalLines.filter((v, i, a) => a.indexOf(v) === i);
-			const mergedStr = replacedLines.join(eol);
-			e.replace(range, mergedStr);
+			e.replace(range, replacedLines.join(eol));
 
-			// calculate line count
-			const originalLineCount = originalLines.length;
-			const afterReplaceLineCount = replacedLines.length;
-			const mergedLineCount = originalLineCount - afterReplaceLineCount;
-
-			// make result message
-			const resultMessage = (
-				mergedLineCount > 0
-				? `Merged ${mergedLineCount} lines`
-				: "No lines are merged"
-			);
-
-			// show result message
-			vscode.window.showInformationMessage(resultMessage);
+			const cnt = originalLines.length - replacedLines.length;
+			vscode.window.showInformationMessage(
+				cnt > 0
+					? `Merged ${cnt} lines`
+					: "No lines are merged");
 		}, {});
 	});
 
