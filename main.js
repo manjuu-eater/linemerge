@@ -28,7 +28,11 @@ function activate(context) {
 
 			const originalLines = txt.slice(st, en - st + 1);
 			const replacedLines = originalLines.filter((v, i, a) => a.indexOf(v) === i);
-			e.replace(range, replacedLines.join(eol));
+
+			// replace text only if any lines are merged
+			if (originalLines.length != replacedLines.length) {
+				e.replace(range, replacedLines.join(eol));
+			}
 
 			const cnt = originalLines.length - replacedLines.length;
 			vscode.window.showInformationMessage(
